@@ -6,6 +6,7 @@ import math
 grid = {}
 sourceFile = "C:/SegmentGeneration/202112_c10_b_rwr.txt"
 targetFile = "C:/SegmentGeneration/202112_c10_b_or.txt"
+vertexFile = "C:/SegmentGeneration/202112_c10_b_vertex.txt"
 multiplier = 100000
 gridWidth = 10
 shifter =  math.pow(10, math.log10(multiplier) + 3)
@@ -185,6 +186,50 @@ with open(targetFile, "w") as w:
                     onRoad = "1"
             w.write(onRoad)
             w.write(";")
-            w.write(line)
-                
+            w.write(line.replace("\n",";" + str(gridKey) + "\n"))
+
+with open(vertexFile, "w") as v:                
+    with open(targetFile, "w") as w:
+        with open(sourceFile, "r") as r:
+            while True:
+                line = r.readline()
+                if not line:
+                    break
+                cells = line.split(';')
+                if cells[0] == '' or cells[1] == "dist2road":
+                    continue
+
+                gridKey = math.floor((float(cells[2]) + 90) * multiplier / gridWidth) * gridWidth * shifter \
+                        + math.floor((float(cells[3]) + 180) * multiplier / gridWidth) * gridWidth
+
+                onRoad = "0"
+                if gridKey in gridOnRoad:
+                    if gridOnRoad[gridKey]:
+                        onRoad = "1"
+                w.write(onRoad)
+                w.write(";")
+                w.write(line.replace("\n",";" + str(gridKey) + "\n"))
+                    
+    with open(targetFile, "r") as r:
+        with open(vertexFile, "w") as v:
+            while True:
+                line = r.readline()
+                if not line:
+                    break
+                cells = line.split(';')
+                if cells[0] == '' or cells[1] == "dist2road":
+                    continue
+
+                gridKey = math.floor((float(cells[2]) + 90) * multiplier / gridWidth) * gridWidth * shifter \
+                        + math.floor((float(cells[3]) + 180) * multiplier / gridWidth) * gridWidth
+
+                onRoad = "0"
+                if gridKey in gridOnRoad:
+                    if gridOnRoad[gridKey]:
+                        onRoad = "1"
+                w.write(onRoad)
+                w.write(";")
+                w.write(line.replace("\n",";" + str(gridKey) + "\n"))
+                    
+
 
